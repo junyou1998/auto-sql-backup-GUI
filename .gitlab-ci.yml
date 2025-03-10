@@ -1,0 +1,27 @@
+image: node:18
+
+stages:
+  - build
+  - release
+
+variables:
+  GITLAB_TOKEN: $CI_JOB_TOKEN
+
+before_script:
+  - npm install
+
+build:
+  stage: build
+  script:
+    - npm run dist
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 day
+
+release:
+  stage: release
+  script:
+    - npx electron-builder --publish always
+  only:
+    - main
